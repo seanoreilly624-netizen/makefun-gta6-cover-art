@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Vice City Cover Maker — turn your photos into a multi-panel sunset poster with drag-to-crop panels, caption lettering, colour grades and PNG export. Runs fully offline.">
+<title>Vice City Cover Maker — multi-panel poster studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <h1>Vice City Cover Maker</h1>
+    <p class="tagline">Turn your photos into a multi-panel sunset poster — no uploads, everything runs in your browser.</p>
+  </div>
+  <div class="top-actions">
+    <button id="export" type="button" class="primary">Export PNG</button>
+  </div>
+</header>
+
+<main class="editor">
+  <section class="stage-wrap" aria-label="Cover preview">
+    <canvas id="cover" width="1920" height="1080"></canvas>
+    <p class="stage-hint">Click a panel to select it, then drag inside it to reposition the photo.</p>
+    <p id="status" class="status" role="status">Loading the pier sample…</p>
+  </section>
+
+  <aside class="controls" aria-label="Editor controls">
+    <section class="group">
+      <h2>1 · Photos</h2>
+      <p class="help">Load up to three photos. One photo can fill several panels with different crops; several photos spread across the grid.</p>
+      <div id="photo-slots"></div>
+    </section>
+
+    <section class="group">
+      <h2>2 · Layout</h2>
+      <div id="layout-btns" class="btn-row"></div>
+    </section>
+
+    <section class="group">
+      <h2>3 · Selected panel</h2>
+      <p id="panel-label" class="help">Panel 5 of 9</p>
+      <div id="panel-photo" class="btn-row wrap"></div>
+      <label class="slider-label" for="zoom">Zoom <span id="zoom-value">100%</span></label>
+      <input id="zoom" type="range" min="100" max="250" value="100" step="5">
+      <button id="reset-crops" type="button">Reset all crops</button>
+    </section>
+
+    <section class="group">
+      <h2>4 · Caption</h2>
+      <label class="field-label" for="caption">Big cover lettering</label>
+      <input id="caption" type="text" value="Sunset Heist" maxlength="24" autocomplete="off">
+      <label class="field-label" for="subcaption">Small line under it</label>
+      <input id="subcaption" type="text" value="Vice City Stories" maxlength="40" autocomplete="off">
+    </section>
+
+    <section class="group">
+      <h2>5 · Colour grade</h2>
+      <div id="grade-btns" class="btn-row"></div>
+    </section>
+
+    <section class="group">
+      <h2>6 · Export size</h2>
+      <div id="size-btns" class="btn-row"></div>
+      <p class="help">Export downloads a PNG at the size above. The preview keeps the same shape.</p>
+    </section>
+  </aside>
+</main>
+
+<footer class="foot">
+  <p>Original artwork drawn on canvas for this app. Not affiliated with Rockstar Games, and it uses no Rockstar art, logos or fonts. Sample photos are free to use.</p>
+</footer>
+
+<script type="module">
+  // Screenshot mode (?shot=cover) runs the scene runner only; every other
+  // visit runs the editor. Editor screenshots load the editor first, then
+  // the runner, which only waits for the editor to finish painting.
+  const q = new URLSearchParams(location.search);
+  if (q.get('shot') === 'cover') {
+    await import('./src/shots.js');
+  } else {
+    await import('./src/main.js');
+    if (q.get('shot') === 'editor') await import('./src/shots.js');
+  }
+</script>
+</body>
+</html>
